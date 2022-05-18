@@ -3,10 +3,19 @@
 
 [TOC]
 ## 一、保留字
-![Alt text](./保留字.png)
+
+| and      | elif    | import | raise  | global   |
+| -------- | ------- | ------ | ------ | -------- |
+| as       | else    | in     | return | nonlocal |
+| assert   | except  | is     | try    | True     |
+| break    | finally | lambda | while  | False    |
+| class    | for     | not    | with   | None     |
+| continue | from    | or     | yield  |          |
+| def      | if      | pass   | del    |          |
+
+评估函数`eval()`:去掉参数最外侧引号并执行余下语句的函数
 
 
-**评估函数eval():去掉参数最外侧引号并执行余下语句的函数**
 
 ## 二、数据类型
 
@@ -23,8 +32,10 @@
 | 十六进制	| 0x/0X开头 | 0x9a，-0X89 |
 ####  （2）浮点数类型，float()
 
-     print(0.1+0.2==0.3)#False
-     print(round(0.1+0.2,1)==0.3)#True
+```python
+ print(0.1+0.2==0.3)#False
+ print(round(0.1+0.2,1)==0.3)#True
+```
 - **取值范围数量级约为-pow(10,307)~pow(10,308)，精度数量级pow(10,-16)**
 - **浮点间运算存在不确定尾数，不确定尾数一般发生在10\*\*16左右**
 - **round(x,d)：对x四舍五入，d是小数截取位，常用来辅助浮点间比较、运算**
@@ -36,9 +47,11 @@
 | 9.6E5		| 9.6*pow(10,5) |
 #### （3）复数类型，complex()
 
-    z=1 + 2j #其中j=pow(-1,1/2)
-    z.real #获取实部1.0
-    z.imag #获取虚部2.0
+```python
+z=1 + 2j #其中j=pow(-1,1/2)
+z.real #获取实部1.0
+z.imag #获取虚部2.0
+```
 #### （4）数值运算
  **+、-、\*、/、//、%、\*\*、二元增强赋值操作符(如+=)**
  **abs()、divmod()、pow()、round()、max()、min()、int()、float()、complex()**
@@ -70,10 +83,6 @@
 |S<=T或S<T	| 返回True/False，判断S和T的子集关系			|
 |S>=T或S>T	| 返回True/False，判断S和T的包含关系			|
 |S\|=T,S-=T,S&=T,S^=T| 增强操作符							|
-
-
-
-
 
 
 
@@ -128,10 +137,6 @@
 
 
 
-
-
-
-
 ### 4.序列类型及操作
 #### 1.序列类型定义
 - **序列是具有先后关系的一组元素，序列是个基类类型**
@@ -159,14 +164,14 @@
 
 
 
-
-
 ### 5.字符串类型及操作
 #### （1）字符串索引
 
-    a = str(123456789) #'''123456789'''
-    b = a[::-1]        #"""987654321"""
-    c = a[0:-1:2]      #'1357'
+```python
+a = str(123456789) #'''123456789'''
+b = a[::-1]        #"""987654321"""
+c = a[0:-1:2]      #'1357'
+```
 #### （2）字符串操作符
 
 | 操作符及使用|   描述   |
@@ -196,25 +201,22 @@
 | **s.center(width[,fillchar])**|**字符串s根据宽度width居中，fillchar默认为空格** |**'shengkai'.center(10,'-')=='-shengkai-'**|
 | **s.strip(chars)**		|**从s中去掉其左侧和右侧chars中列出的字符**|**"= python= ".strip(" =np")=="ytho"**
 | **s.join(iter)**			|**在iter可迭代类型中除最后一个元素外每个元素后增加一个s**|**",".join('liu')=='l,i,u'**|
-#### （5）字符串的格式化
+#### （5）字符串的格式化: `fromat()`
 
-   ![Alt text](./QQ图片20190813133619.jpg)
+格式：` {<参数序号>: <格式控制标记>}`
 
-![Alt text](./QQ图片20190813133628.jpg)![Alt text](./QQ图片20190813133634.jpg)
+| :        | <填充>   | <对齐>                             | <宽度>   | <,>        | <.精度>                        | <类型>                                 |
+| -------- | -------- | ---------------------------------- | -------- | ---------- | ------------------------------ | -------------------------------------- |
+| 引导符号 | 单个字符 | < 左对齐<br />> 右对齐<br />^ 居中 | 输出宽度 | 千位分隔符 | 浮点数精度<br />字符串最大长度 | 整数：b,c,d,o,x,X<br />浮点数：e,E,f,% |
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+```python
+"{0:=^20}".format("Python")     					# '=======Python======='
+"{0:*>20}".format("BIT")							# '*****************BIT'
+"{:10}".format("BIT")								# 'BIT       '
+"{0:,.2f}".format("12345.6789") 					# '2,345.68'
+"{0:b},{0:c},{0:d},{0:o},{0:x},{0:X}".format(425)	# '110101001,Ʃ,425,651,1a9,1A9'
+"{0:e},{0:E},{0:f},{0:%}".format(3.14)				# '3.140000e+00,3.140000E+00,3.140000,314.000000%'
+```
 
 
 
@@ -261,48 +263,58 @@
 ### 1.分支结构
 #### （1）二分支结构
 
-    if <条件>:
-        <语句块1>
-    else:
-    	<语句块2>
-    #紧凑型
-    <语句块1> if <条件> else <语句块2>
+```python
+if <条件>:
+    <语句块1>
+else:
+	<语句块2>
+#紧凑型
+<语句块1> if <条件> else <语句块2>
+```
 #### （2）多分支结构
 
-    if <case1>:
-        <sentence1>
-    elif <case2>:
-    	<sentence2>
-    ......
-    else:
-    	<ssentence3>
+```python
+if <case1>:
+    <sentence1>
+elif <case2>:
+	<sentence2>
+......
+else:
+	<ssentence3>
+```
 #### （3）异常处理
 
-    try:
-        <sentence1>  #sentence1出现异常执行sentence2，正常执行sentence3
-    except:
-    	<sentence2>  #出现异常时执行
-    else:
-     	<sentence3>  #作为正常执行sentence1的奖励   
-    finally:
-    	<sentence4>  #不管是否出现异常，都执行sentence4
+```python
+try:
+    <sentence1>  #sentence1出现异常执行sentence2，正常执行sentence3
+except:
+	<sentence2>  #出现异常时执行
+else:
+ 	<sentence3>  #作为正常执行sentence1的奖励   
+finally:
+	<sentence4>  #不管是否出现异常，都执行sentence4
+```
 ### 2.循环结构
 #### （1）for循环
 
-    for <variable> in <iter>:
-    	if <case>: 
-    	    break
-    	<sentence1>
-    else:
-    	<sentence2> #sentence2作为正常完成循环的奖励，即没有执行break  
+```python
+for <variable> in <iter>:
+	if <case>: 
+	    break
+	<sentence1>
+else:
+	<sentence2> #sentence2作为正常完成循环的奖励，即没有执行break  
+```
 #### （2）while循环
 
-    while <case1>:
-        if <case2>:
-    	    continue #跳过下面语句进入下一轮循环
-    	<sentence1>
-    else:
-    	<sentence2> #只要循环没有被break，执行sentence2
+```python
+while <case1>:
+    if <case2>:
+	    continue #跳过下面语句进入下一轮循环
+	<sentence1>
+else:
+	<sentence2> #只要循环没有被break，执行sentence2
+```
 
 
 
@@ -311,18 +323,24 @@
 ## 四、文件和数据处理
 ### 1.文件的打开和关闭
 
-    f = open(<file_path>,<mode>) #打开文件
-    f.close()  #关闭文件
+```python
+f = open(<file_path>,<mode>) #打开文件
+f.close()  #关闭文件
+```
 **由于文件读写时都有可能产生IOError，一旦出错，后面的f.close()就不会调用。所以，为了保证无论是否出错都能正确地关闭文件，我们可以使用try ... finally来实现：**
 
-    try：
-        f = open(<file_path>,<mode>)
-    finally:
-    	if f:
-    		f.close()
+```python
+try：
+    f = open(<file_path>,<mode>)
+finally:
+	if f:
+		f.close()
+```
 **每次都这么写实在太繁琐，所以，Python引入了with语句来自动帮我们调用close()方法：**
 
-    with open(<file_path>,<mode>) as f: #with的作用是自动调用close()方法	    print(f.read())
+```python
+with open(<file_path>,<mode>) as f: #with的作用是自动调用close()方法	    print(f.read())
+```
 
 **open(file_name,mode)中mode参数：**
 
@@ -349,89 +367,47 @@
 |**f.seek(offset)**	|**改变当前文件操作指针的位置，offset含义如下：0-文件开头；1-当前位置；2-文件结尾**|
 #### （2）逐行遍历
 
-    #方法一
-    fname = input("请输入要打开的文件名称：")
-    fo = open(fname,"r")
-    for line in fo.readlines():  #一次读入，分行处理
-        print(line)
-    fo.close()
-    #方法二
-    fname = input("请输入要打开的文件名称：")
-    fo = open(fname,'r')
-    for line in fo:   #分行读入逐行处理，文件对象fo是一个迭代器
-    	print(line)
-    fo.close()
+```python
+#方法一
+fname = input("请输入要打开的文件名称：")
+fo = open(fname,"r")
+for line in fo.readlines():  #一次读入，分行处理
+    print(line)
+fo.close()
+#方法二
+fname = input("请输入要打开的文件名称：")
+fo = open(fname,'r')
+for line in fo:   #分行读入逐行处理，文件对象fo是一个迭代器
+	print(line)
+fo.close()
+```
 
 #### （3）一维数据的读写
 
-    #读入
-    with open(fname) as fo:
-        txt = fo.read()
-        ls = txt.split(',') #逗号分隔的文本文件
-    #写入
-    ls #要写入的字符串列表
-    with open(fname,'w') as fo:
-        s = ','.join(ls)
-        fo.write(s)
+```python
+#读入
+with open(fname) as fo:
+    txt = fo.read()
+    ls = txt.split(',') #逗号分隔的文本文件
+#写入
+ls #要写入的字符串列表
+with open(fname,'w') as fo:
+    s = ','.join(ls)
+    fo.write(s)
+```
 
 #### （4）CSV文件的读写
 
-    #读入
-    ls = []
-    with open(fname) as fo:
-    	for line in fo:
-    		line = line.replace('\n','')
-    		ls.append(line.split(','))
-    #写入
-    ls #二维字符串列表
-    with open(fname,'w') as fo:
-    	for item in ls:
-    		fo.write(','.join(item) + '\n')
-
-## 五、高级特性
-### 1.推导式迭代器生成器
-![Alt text](./python高级特性.png)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+```python
+#读入
+ls = []
+with open(fname) as fo:
+	for line in fo:
+		line = line.replace('\n','')
+		ls.append(line.split(','))
+#写入
+ls #二维字符串列表
+with open(fname,'w') as fo:
+	for item in ls:
+		fo.write(','.join(item) + '\n')
+```
