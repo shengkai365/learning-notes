@@ -225,6 +225,59 @@ lRUCache.get(4);    // 返回 4
 - `0 <= value <= 105`
 - 最多调用 `2 * 105` 次 `get` 和 `put`
 
+```python
+class DoubleListNode:
+    def __init__(self, key=0, val=0):
+        self.key = key  # 可以根据节点找key
+        self.val = val
+        self.pre = None
+        self.nxt = None
+
+class LRUCache:
+    def __init__(self, capacity: int):
+        self.dic = {}   # key(int) : DoubleListNode
+        self.cap = capacity
+        self.head = DoubleListNode()
+        self.tail = DoubleListNode()
+        self.head.nxt = self.tail
+        self.tail.pre = self.head
+
+    def remove_from_the_list(self, node):
+        node.pre.nxt = node.nxt
+        node.nxt.pre = node.pre
+
+    def push_node_to_tail(self, node):
+        node.nxt = self.tail
+        node.pre = self.tail.pre
+        node.pre.nxt = node
+        self.tail.pre = node
+
+
+    def get(self, key: int) -> int:
+        if key in self.dic:
+            self.remove_from_the_list(self.dic[key])
+            self.push_node_to_tail(self.dic[key])
+            return self.dic[key].val
+        else:
+        	return -1
+
+
+    def put(self, key: int, value: int) -> None:
+        if key in self.dic:
+            self.remove_from_the_list(self.dic[key])
+            self.push_node_to_tail(self.dic[key])
+            self.dic[key].val = value
+        else:
+            node = DoubleListNode(key, value)
+            self.push_node_to_tail(node)
+
+            if self.cap > 0:
+                self.cap -= 1
+            else:
+                del self.dic[self.head.nxt.key]
+                self.remove_from_the_list(self.head.nxt)
+```
+
 
 
 

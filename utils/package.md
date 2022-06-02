@@ -13,4 +13,5 @@
 | uninstaller        | geek        | `apt-get remove --purge` |
 | terminal           | xshell      |  `ctl + alt + t`         |
 | mirror creation    | UltralSO    |     |
+| Editor | VS Code | VS Code |
 
