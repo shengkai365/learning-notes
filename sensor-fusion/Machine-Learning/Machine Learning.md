@@ -110,12 +110,6 @@ AUC的值沿着ROC横轴做积分就可以计算了，取值一般在0.5~1之间
 
 
 
-
-
-
-
-
-
 ### 8.回归指标
 - **平均绝对误差(Mean Absolute Error)**
 $$\mid Y-Y_0\mid$$
@@ -151,26 +145,6 @@ re_sore(y_true,y_predict)
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 ### 2.交叉验证(Cross Validation)
 ![@交叉验证步骤](./cross_validation.png)
 - 简单交叉验证的缺点是不能循环利用数据，下面介绍k折交叉验证
@@ -188,30 +162,12 @@ for train_indices,test_indices in kf:
 
 
 
-
-
-
-
 ### 4.学习曲线(Learning Curves)
 ![@Under Fitting(欠拟合)/High Bias](./learning_curves1.png)
 ![@Just Right](./learning_curves2.png)
 
 ![@Over Fitting(过拟合)/High Variance](./learning_curves3.png)
 - **图中CV Error 相当于Testing Error，即黄色曲线代表测试误差，绿色曲线代表训练误差。**
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
