@@ -46,7 +46,17 @@
 
 
 
-> Next Permuation - 31
+> Next Permuation - 31 [wikipedia](https://en.wikipedia.org/wiki/Permutation#Generation_in_lexicographic_order)
+
+The following algorithm generates the next permutation lexicographically after a given permutation. It changes the given permutation in-place. 
+
+- Find the largest index k such that a[k] < a[k + 1]. If no such index exists, the permutation is the last permutation.
+
+- Find the largest index l greater than k such that a[k] < a[l].
+
+- Swap the value of a[k] with that of a[l].
+
+- Reverse the sequence from a[k + 1] up to and including the final element a[n].
 
 
 
@@ -226,56 +236,66 @@ lRUCache.get(4);    // 返回 4
 - 最多调用 `2 * 105` 次 `get` 和 `put`
 
 ```python
-class DoubleListNode:
-    def __init__(self, key=0, val=0):
-        self.key = key  # 可以根据节点找key
+class DoubleList:
+    def __init__(self, key: int, val: int):
+        self.key = key
         self.val = val
         self.pre = None
         self.nxt = None
 
 class LRUCache:
     def __init__(self, capacity: int):
-        self.dic = {}   # key(int) : DoubleListNode
-        self.cap = capacity
-        self.head = DoubleListNode()
-        self.tail = DoubleListNode()
+        self.head = DoubleList(0, 0)
+        self.tail = DoubleList(0, 0)
         self.head.nxt = self.tail
         self.tail.pre = self.head
+        self.cap = capacity
+        self.dic = {}
 
-    def remove_from_the_list(self, node):
-        node.pre.nxt = node.nxt
+    def remove_node_from_list(self, node: DoubleList) -> None:
         node.nxt.pre = node.pre
+        node.pre.nxt = node.nxt
 
-    def push_node_to_tail(self, node):
-        node.nxt = self.tail
+    def insert_node_to_tail(self, node: DoubleList) ->None:
+        node.nxt  = self.tail
         node.pre = self.tail.pre
+        node.nxt.pre = node
         node.pre.nxt = node
-        self.tail.pre = node
-
 
     def get(self, key: int) -> int:
         if key in self.dic:
-            self.remove_from_the_list(self.dic[key])
-            self.push_node_to_tail(self.dic[key])
-            return self.dic[key].val
-        else:
-        	return -1
+            node = self.dic[key]
+            self.remove_node_from_list(node)
+            self.insert_node_to_tail(node)
+            return node.val
 
+        else:
+            return -1
 
     def put(self, key: int, value: int) -> None:
         if key in self.dic:
-            self.remove_from_the_list(self.dic[key])
-            self.push_node_to_tail(self.dic[key])
-            self.dic[key].val = value
+            node = self.dic[key]
+            node.val = value
+            self.remove_node_from_list(node)
+            self.insert_node_to_tail(node)
+        
         else:
-            node = DoubleListNode(key, value)
-            self.push_node_to_tail(node)
-
             if self.cap > 0:
+                # insert
+                node = DoubleList(key, value)
+                self.insert_node_to_tail(node)
+                self.dic[key] = node
                 self.cap -= 1
             else:
-                del self.dic[self.head.nxt.key]
-                self.remove_from_the_list(self.head.nxt)
+                # pop
+                remove_node = self.head.nxt
+                del self.dic[remove_node.key]
+                self.remove_node_from_list(remove_node)
+
+                # insert
+                node = DoubleList(key,value)
+                self.insert_node_to_tail(node)
+                self.dic[key] = node
 ```
 
 

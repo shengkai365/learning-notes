@@ -505,53 +505,53 @@ echo $PATH # 输出某个环境变量的值
 
 **文件检索**
 
-1. find /path/to/directory/ -name '*.py'：搜索某个文件路径下的所有*.py文件
+1. `find /path/to/directory/ -name '*.py'`：搜索某个文件路径下的所有*.py文件
 
-2. grep xxx：从stdin中读入若干行数据，如果某行中包含xxx，则输出该行；否则忽略该行。
+2. `grep xxx`：从stdin中读入若干行数据，如果某行中包含xxx，则输出该行；否则忽略该行。
 
-3. wc：统计行数、单词数、字节数
+3. `wc`：统计行数、单词数、字节数
 
    - 既可以从stdin中直接读入内容；也可以在命令行参数中传入文件名列表；
-   - wc -l：统计行数
-   - wc -w：统计单词数
-   - wc -c：统计字节数
+   - `wc -l`：统计行数
+   - `wc -w`：统计单词数
+   - `wc -c`：统计字节数
 
    
 
-4. tree：展示当前目录的文件结构
+4. `tree`：展示当前目录的文件结构
 
-   - tree /path/to/directory/：展示某个目录的文件结构
-   - tree -a：展示隐藏文件
+   - `tree /path/to/directory/`：展示某个目录的文件结构
+   - `tree -a`：展示隐藏文件
 
-5. ag xxx：搜索当前目录下的所有文件，检索xxx字符串
+5. `ag xxx`：搜索当前目录下的所有文件，检索xxx字符串
 
-6. cut：分割一行内容
+6. `cut`：分割一行内容
 
    - 从stdin中读入多行数据
-   - echo $PATH | cut -d ':' -f 3,5：输出PATH用:分割后第3、5列数据
-   - echo $PATH | cut -d ':' -f 3-5：输出PATH用:分割后第3-5列数据
-   - echo $PATH | cut -c 3,5：输出PATH的第3、5个字符
-   - echo $PATH | cut -c 3-5：输出PATH的第3-5个字符
+   - `echo $PATH | cut -d ':' -f 3,5`：输出PATH用:分割后第3、5列数据
+   - `echo $PATH | cut -d ':' -f 3-5`：输出PATH用:分割后第3-5列数据
+   - `echo $PATH | cut -c 3,5`：输出PATH的第3、5个字符
+   - `echo $PATH | cut -c 3-5`：输出PATH的第3-5个字符
 
-7. sort：将每行内容按字典序排序
+7. `sort`：将每行内容按字典序排序
 
    - 可以从stdin中读取多行数据
    - 可以从命令行参数中读取文件名列表
 
-8. xargs：将stdin中的数据用空格或回车分割成命令行参数
+8. `xargs`：将stdin中的数据用空格或回车分割成命令行参数
 
-   - find . -name '*.py' | xargs cat | wc -l：统计当前目录下所有python文件的总行数
+   - `find . -name '*.py' | xargs cat | wc -l`：统计当前目录下所有python文件的总行数
 
 **查看文件内容**
 
-1. more：浏览文件内容
+1. `more`：浏览文件内容
 
    - 回车：下一行
    - 空格：下一页
    - b：上一页
    - q：退出
 
-2. less：与more类似，功能更全
+2. `less`：与more类似，功能更全
 
    - 回车：下一行
    - y：上一行
@@ -559,13 +559,13 @@ echo $PATH # 输出某个环境变量的值
    - Page Up：上一页
    - q：退出
 
-3. head -3 xxx：展示xxx的前3行内容
+3. `head -3 xxx`：展示xxx的前3行内容
 
    - 同时支持从stdin读入内容
 
    
 
-4. tail -3 xxx：展示xxx末尾3行内容
+4. `tail -3 xxx`：展示xxx末尾3行内容
 
    - 同时支持从stdin读入内容
 
@@ -573,33 +573,33 @@ echo $PATH # 输出某个环境变量的值
 
 **用户相关**
 
-1. history：展示当前用户的历史操作。内容存放在~/.bash_history中
+1. `history`：展示当前用户的历史操作。内容存放在~/.bash_history中
 
 
 
 **工具**
 
-1. md5sum：计算md5哈希值
+1. `md5sum`：计算md5哈希值
 
    - 可以从stdin读入内容
    - 也可以在命令行参数中传入文件名列表；
 
    
 
-2. time command：统计command命令的执行时间
+2. `time command`：统计command命令的执行时间
 
-3. ipython3：交互式python3环境。可以当做计算器，或者批量管理文件。
+3. `ipython3`：交互式python3环境。可以当做计算器，或者批量管理文件。
 
-   - ! echo "Hello World"：!表示执行shell脚本
+   - `! echo "Hello World"`：!表示执行shell脚本
 
-4. watch -n 0.1 command：每0.1秒执行一次command命令
+4. `watch -n 0.1 command`：每0.1秒执行一次command命令
 
-5. tar：压缩文件
+5. `tar`：压缩文件
 
-   - tar -zcvf xxx.tar.gz /path/to/file/*：压缩
-   - tar -zxvf xxx.tar.gz：解压缩
+   - `tar -zcvf xxx.tar.gz /path/to/file/*`：压缩
+   - `tar -zxvf xxx.tar.gz`：解压缩
 
-6. diff xxx yyy：查找文件xxx与yyy的不同点
+6. `diff xxx yyy`：查找文件xxx与yyy的不同点
 
 
 
@@ -608,6 +608,41 @@ echo $PATH # 输出某个环境变量的值
 1. sudo command：以root身份执行command命令
 2. apt-get install xxx：安装软件
 3. pip install xxx --user --upgrade：安装python包
+
+
+
+#### 4. Filter summary
+
+- [cat](https://www.runoob.com/linux/linux-comm-cat.html) - 用于连接文件并打印到标准输出设备上
+
+- [head](https://www.runoob.com/linux/linux-comm-head.html) - 查看文件的开头部分的内容，有一个常用的参数 **-n** 用于显示行数，默认为 10
+- [tail](https://www.runoob.com/linux/linux-comm-tail.html) - 查看文件的内容，有一个常用的参数 **-f** 常用于查阅正在改变的日志文件。
+- [grep](https://www.runoob.com/linux/linux-comm-grep.html) - 查找某文件的内容符合所指定的范本样式，grep 指令会把含有范本样式的那一列显示出来。
+- [sed](https://www.runoob.com/linux/linux-comm-sed.html) - 依照脚本的指令来处理、编辑文本文件。
+- [uniq](https://www.runoob.com/linux/linux-comm-uniq.html) - 用于检查及删除文本文件中重复出现的行列，一般与 sort 命令结合使用。
+- [cut](https://www.runoob.com/linux/linux-comm-cut.html) - 用于显示每行从开头算起 num1 到 num2 的文字。
+- [tr](https://www.runoob.com/linux/linux-comm-tr.html) - 从标准输入设备读取数据，经过字符串转译后，将结果输出到标准输出设备。
+- [wc](https://www.runoob.com/linux/linux-comm-wc.html) - wc命令用于计算字数。
+- [paste](https://www.runoob.com/linux/linux-comm-paste.html) - 用于合并文件的列。
+- [join](https://www.runoob.com/linux/linux-comm-join.html) - 将两个文件中，指定栏位内容相同的行连接起来。
+- [sort](https://www.runoob.com/linux/linux-comm-sort.html) - 用于将文本文件内容加以排序。
+- [more](https://www.runoob.com/linux/linux-comm-more.html) - 类似 cat ，不过会以一页一页的形式显示，更方便使用者逐页阅读
+- [less](https://www.runoob.com/linux/linux-comm-less.html) - 可以随意浏览文件，支持翻页和搜索，支持向上翻页和向下翻页。
+- [find](https://www.runoob.com/linux/linux-comm-find.html) - 用来在指定目录下查找文件。任何位于参数之前的字符串都将被视为欲查找的目录名。
+- [xargs](https://www.runoob.com/linux/linux-comm-xargs.html) - 默认的命令是 echo，这意味着通过管道传递给 xargs 的输入将会包含换行和空白，不过通过 xargs 的处理，换行和空白将被空格取代。
+- [tee](https://www.runoob.com/linux/linux-comm-tee.html) - 从标准输入设备读取数据，将其内容输出到标准输出设备，同时保存成文件。
+
+
+
+1. 水平切片 - 选择行的子集： cat、head 、tail、grep、sed、uniq
+2. 垂直切分--选择列的子集： cut, sed
+3. 替换: tr, sed
+4. 汇总，简单统计：wc, uniq
+5. 组装 - 结合数据源： paste, join
+6. 重新排序: sort
+7. 查看（总是在管道的末端）：more, less
+8. 文件系统过滤：find
+9. 可编程过滤器: sed, (and perl)
 
 
 

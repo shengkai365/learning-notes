@@ -34,7 +34,7 @@
 
 [快速排序](https://www.acwing.com/problem/content/787/)
 
-```C++
+```C
 void quick_sort(int q[], int l, int r)
 {
     if (l >= r) return;
@@ -46,11 +46,33 @@ void quick_sort(int q[], int l, int r)
         do j -- ; while (q[j] > x);
         if (i < j) swap(q[i], q[j]);
     }
-
+	// 循环结束 j = i 或 j = i - 1, 前面 x 取值靠左半部分
+    // 所以要尽量从靠左的索引（j）处分割，防止死循环
     quick_sort(q, l, j);
     quick_sort(q, j + 1, r);
 }
 ```
+
+```cpp
+template <class T>
+void quick_sort(std::vector<T> &v, int l, int r)
+{
+    if (l >= r) return;
+    T x = v[l + r >> 1];
+    int i = l - 1, j = r + 1;
+    
+    while (i < j)
+    {
+        do i ++; while (v[i] < x);
+        do j --; while (v[j] > x);
+        if (i < j) std::swap(v[i], v[j]);
+    }
+    quick_sort(v, l, j);
+    quick_sort(v, j + 1, r);
+}
+```
+
+
 
 ```python
 def quick_sort(nums, l, r):
@@ -76,7 +98,7 @@ def quick_sort(nums, l, r):
 
 [归并排序](https://www.acwing.com/problem/content/790/)
 
-```C++
+```C
 int N = 100001;
 int q[N], tmp[N];
 
@@ -99,6 +121,29 @@ void merge_sort(int q[], int l, int r)
     for (i = l, j = 0; i <= r; i ++, j ++ ) q[i] = tmp[j];
 }
 ```
+```cpp
+template <class T>
+void merge_sort(std::vector<T> &v, std::vector<T> &tmp, int l, int r)
+{
+    if (l >= r) return;
+    int mid = l + r >> 1;
+    merge_sort(v, tmp, l, mid);
+    merge_sort(v, tmp, mid + 1, r);
+    
+    int i = l, j = mid + 1, k = l;
+    while (i <= mid && j <= r)
+    {
+        if (v[i] <= v[j]) tmp[k ++] = v[i ++];
+        else tmp[k ++] = v[j ++];
+    }
+    while (i <= mid) tmp[k ++] = v[i ++];
+    while (j <= r) tmp[k ++] = v[j ++];
+    for (int k = l; k <= r; k ++) v[k] = tmp[k];
+}
+```
+
+
+
 ```python
 tmp = [0 for _ in range(len(nums))]
 
@@ -130,6 +175,8 @@ def merge_sort(nums, l, r):
         nums[i] = tmp[i-l]
 
 ```
+
+
 
 ### 2.2 二分
 
@@ -395,7 +442,7 @@ void merge(vector<PII> &nums)
 
 #### 3.1.1 单链表
 
-```C++
+```C
 // head存储链表头，e[]存储节点的值，ne[]存储节点的next指针，idx表示当前用到了哪个节点
 int head, e[N], ne[N], idx;
 
@@ -419,17 +466,108 @@ void remove()
 }
 ```
 
+```cpp
+struct ListNode 
+{
+	int val;
+    ListNode *next;
+    ListNode() : val(0), next(nullptr) {}
+    ListNode(int x) : val(x), next(nullptr) {}
+    ListNode(int x, ListNode *next) : val(x), next(next) {}
+};
+
+// init
+ListNode* p = new ListNode(6);
+```
+
+```python
+class ListNode:
+    def __init__(self, val = 0, next = None):
+        self.val = val
+        self.next = next
+
+# init
+p = ListNode(6);
+```
+
 
 
 #### 3.1.2 双链表
+
+```cpp
+struct DLinkedNode 
+{
+    int val;
+    DlinkedNode* prev;
+    DlinkedNode* next;
+    DLinkedNode(): val(0), prev(nullptr), next(nullptr) {}
+    DlinkedNode(int value): val(value), prev(nullptr), next(nullptr) {}
+};
+```
+
+```python
+class DLinkedNode:
+    def __init__(self, value = 0):
+        self.val = value
+        self.prev = None
+        self.next = None
+```
 
 
 
 ### 3.2 栈
 
-#### 3.2.1 模拟栈
+#### 3.2.1 栈用法
+
+```cpp
+template<class T, class Container = deque<T> > class stack;
+
+std::stack<int> st;	// init
+
+st.empty();
+st.size();
+st.top();
+st.push();
+st.pop();
+```
+
+```python
+## Method1: List
+stack = []  # init
+len(stack)	# empty、size
+stack[-1]	# top
+stack.append(val)	# push
+stack.pop()			# pop
+
+## Method2: collections.deque
+# init
+st = deque()
+st = deque('abc')
+st = deque([1, 2, 3])
+
+len(st)
+st[-1]
+st.append(val)
+st.pop()
+```
+
+
 
 #### 3.2.2 单调栈
+
+```cpp
+// 常见模型：找出每个数左边离它最近的比它大/小的数
+stack<int> stk;
+for (int i=0; i<n; i++)
+{
+    while (stk.size() && check(stk.top(), i)) stk.pop();
+    stk.push(i);
+}
+```
+
+
+
+
 
 
 
@@ -497,6 +635,57 @@ int query(char *str)
 #### 3.8.1 一般哈希
 
 #### 3.8.2 字符串哈希
+
+#### 3.8.3 Python - 有序哈希
+
+[Sorted Containers](https://grantjenks.com/docs/sortedcontainers/)是用纯Python开发的模块，可以高效 $(O(logn))$ 地插入或删除一个单元并且保持是有序的。它包含`SortedDict`, `SortedSet`和`SortedList`，提供兼容普通的`dict`, `set`和`list`的`API`，所以用法差不多。在LeetCode下可以直接使用，如果是自己的开发环境则需要手动安装。
+
+> 一般是以平衡二叉树的结构实现，C++中set、map可以实现类似的功能
+
+`SortedSet`
+
+```python
+from sortedcontainers import SortedSet
+from collections import defaultdict  # 不用初始化values
+# __init__
+ss = SortedSet([3, 1, 2, 5, 4])
+ss = SortedSet()
+
+# 判断是否在ss中
+if value in ss:
+    pass
+
+# 加入元素, O(log(n))
+ss.add(val)
+
+# 删除元素，不存在什么也不做，O(log(n))
+ss.discard(val)
+
+# 删除元素，不存在 raise KeyError，O(long(n))
+ss.remove(val)
+
+# 清除所有元素，O(log(n))
+ss.clear()
+
+# 弹出指定索引元素，O(log(n))
+ss.pop(idx)
+ss.pop(0)	# 弹出最小元素
+ss.pop(-1)	# 弹出最大元素
+```
+
+
+
+`SortedDict`
+
+```python
+from sortedcontainers import SortedDict
+
+# 初始化
+sorted_dict = SortedDict({1 :'a', 4 :'d', 2:'b'})
+sorted_dict = SortedDict()
+
+# .......
+```
 
 
 
@@ -609,6 +798,33 @@ bitset, 圧位
 
 ## 四、搜索与图论
 
+### 4.0 树和图的存储
+
+树是一种特殊的图，与树的存储方式相同。对于无向图的边ab，存储两条有向边a->b, b->a。
+
+因此我们可以只考虑有向图的存储。
+
+- 邻接矩阵：$g[a][b]$ 存储边 a->b
+
+- 邻接表：
+
+  ```c++
+  // 对于每个点k，开一个单链表，存储k所有可以走到的点。h[k]存储这个单链表的头节点
+  int h[N], e[N], ne[N], idx;
+  
+  // 添加一条边 a->b
+  void add(int a, int b)
+  {
+      e[idx] = b, ne[idx] = h[a], h[a] = idx ++;
+  }
+  
+  // 初始化
+  idx = 0;
+  memset(h, -1, sizeof h)
+  ```
+
+  
+
 ### 4.1 DFS与BFS
 
 ```C++
@@ -637,11 +853,172 @@ while (q.size())
 
 ### 4.2 树与图的遍历： 拓扑排序
 
+https://en.wikipedia.org/wiki/Topological_sorting
+
+```
+L ← 包含已排序的元素的列表，目前为空
+Q ← 入度为零的节点的队列
+当 Q 非空时：
+    将节点n从Q移走
+    将n加到L尾部
+    选出任意起点为n的边e = (n,m)，移除e。如m没有其它入边，则将m加入Q。
+    重复上一步。
+如图中有剩余的边则：
+    return error   (图中至少有一个环)
+否则： 
+    return L   (L为图的拓扑排序)
+```
+
+
+
+```python
+# graph: 邻接表
+# in_edges: 节点入度统计
+def top_sort(graph, in_edges):
+    top_path = []	# top_path: 拓扑排序的路径之一
+    # que: 入度为 0 的集合
+    que = [i for i in range(1, len(in_edges)) if in_edges[i] == 0]
+    
+    while len(que):
+        n = que.pop()
+        top_path.append(n)
+        for j in graph[n]:
+            in_edges[j] -= 1
+            if in_edges[j] == 0:
+                que.append(j)
+    
+    if len(top_path) == len(graph) - 1:
+        return top_path
+    else:
+        return None
+        
+    
+
+def main():
+    n, m = map(int, input().split())
+    graph = [[] for _ in range(n + 1)]
+    in_edges = [0] * (n + 1)
+    
+    
+    for i in range(m):
+        x, y = map(int, input().split())
+        graph[x].append(y)
+        in_edges[y] += 1
+    
+    ret = top_sort(graph, in_edges)
+    if ret:
+        print(' '.join(map(str, ret)))
+    else:
+        print(-1)
+
+if __name__ == "__main__":
+    main()
+```
+
+
+
 ### 4.3 最短路
 
 ### 4.4 最小生成树
 
 ### 4.5 二分图： 染色法、匈牙利算法
+
+```c++
+#include <iostream>
+#include <cstring>
+#include <algorithm>
+using namespace std;
+const int N = 510, M = 100010;
+
+// n1：第一个集合的点数；n2：第二个集合的点数；m：边数
+int n1, n2, m;
+// 邻接表存储边，匈牙利算法只会用到第一个集合指向第二个集合的边，这里只需存一个方向的边
+int h[N], e[M], ne[M], idx;
+// 存储第二个集合中每个点当前匹配的第一个集合中的点是哪个
+int match[N];
+// 表示第二个集合中的每个点是否已经被遍历过
+bool st[N];
+
+void add(int a, int b)
+{
+     e[idx] = b, ne[idx] = h[a], h[a] = idx ++;
+}
+
+bool find(int x)
+{
+    for (int i = h[x]; i != -1; i = ne[i])
+    {
+        int j = e[i];
+        if (!st[j])
+        {
+            st[j] = true;
+            if (match[j] == 0 || find(match[j]))
+            {
+                match[j] = x;
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+int main()
+{
+    scanf("%d%d%d", &n1, &n2, &m);
+    memset(h, -1, sizeof h);
+    while (m--)
+    {
+        int a, b;
+        scanf("%d%d", &a, &b);
+        add(a, b);
+    }
+    
+    // 求最大匹配数，依次枚举第一个集合中的每个点能否匹配第二个集合中的点
+    int res = 0;
+    for (int i = 1; i <= n1; i ++)
+    {
+        memset(st, false, sizeof st);
+        if (find(i)) res ++;
+    }
+    printf("%d\n", res);
+    return 0;
+}
+```
+
+```python
+def find(graph, st, match, i):
+    for j in graph[i]:  # j: 集合二中节点
+        if not st[j]:
+            st[j] = True
+            if match[j] == 0 or find(graph, st, match, match[j]):
+                match[j] = i
+                return True
+    return False
+        
+
+def main():
+    n1, n2, m = map(int, input().split())
+    # 邻接表
+    graph = [[] for _ in range(n1 + 1)]
+    # 表示第二个集合中每个点当前匹配的第一个集合中的点是哪个
+    match = [0 for _ in range(n2 + 1)]
+    
+    for i in range(m):
+        a, b = map(int, input().split())
+        graph[a].append(b)
+    
+    ret = 0
+    for i in range(1, n1 + 1):
+        # 表示第二个集合中每个点是否已被遍历过
+        st = [False for _ in range(n2 + 1)] 
+        if find(graph, st, match, i):
+            ret += 1
+        
+    print(ret)
+    
+if __name__ == "__main__":
+    main()
+```
 
 
 
