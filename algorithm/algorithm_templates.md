@@ -30,150 +30,342 @@
 
 ### 2.1 排序
 
-#### 2.1.1 快速排序
+![](./picture/sort.png)
+
+- **是否稳定看交换元素是是否破坏原来的相对顺序。**
+
+![](./picture/sort_On.png)
+
+#### 2.1.1 插入 vs 冒泡 vs 选择
+
+- 插入（稳定）
+
+![](./picture/插入.gif)
+
+- 冒泡（稳定）
+
+![](./picture/冒泡.gif)
+
+- 选择（不稳定）
+
+![](./picture/选择.gif)
+
+
+
+
+
+
+
+#### 2.1.2 快速排序
 
 [快速排序](https://www.acwing.com/problem/content/787/)
 
-```C
-void quick_sort(int q[], int l, int r)
+![](./picture/快速.gif)
+
+```c++
+#include <algorithm> //std::sort C++
+#include <utility>   // std::swap
+using namespace std;
+
+//快速排序C++实现
+void quick_sort(vecotr<int>& a, int l, int r)
 {
     if (l >= r) return;
-
-    int i = l - 1, j = r + 1, x = q[l + r >> 1];
+    int i = l-1, j = r+1, k = a[l + (r-l)/2];
     while (i < j)
     {
-        do i ++ ; while (q[i] < x);
-        do j -- ; while (q[j] > x);
-        if (i < j) swap(q[i], q[j]);
+        do i++; while (a[i] < k);
+        do j--; while (k < a[j]);
+        if (i < j) swap(a[i], a[j]);
     }
-	// 循环结束 j = i 或 j = i - 1, 前面 x 取值靠左半部分
-    // 所以要尽量从靠左的索引（j）处分割，防止死循环
-    quick_sort(q, l, j);
-    quick_sort(q, j + 1, r);
-}
-```
-
-```cpp
-template <class T>
-void quick_sort(std::vector<T> &v, int l, int r)
-{
-    if (l >= r) return;
-    T x = v[l + r >> 1];
-    int i = l - 1, j = r + 1;
-    
-    while (i < j)
-    {
-        do i ++; while (v[i] < x);
-        do j --; while (v[j] > x);
-        if (i < j) std::swap(v[i], v[j]);
-    }
-    quick_sort(v, l, j);
-    quick_sort(v, j + 1, r);
+    quick_sort(a, l, j);
+    quick_sort(a, j+1, r);
 }
 ```
 
 
+
+#### 2.1.3 堆排序
+
+![](./picture/堆.gif)
 
 ```python
-def quick_sort(nums, l, r):
-        if l >= r: return 
+from heapq import heapify,heappush,heappop
 
-        i, j, x = l-1, r+1, nums[l + r >> 1]
-        while i < j:
-            while True:
-                i += 1
-                if nums[i] >= x: break
-            while True:
-                j -= 1
-                if nums[j] <= x: break
-            if i < j:
-                nums[i], nums[j] = nums[j], nums[i]
-        quick_sort(nums, l, j)
-        quick_sort(nums, j+1, r)
+#从heap[index]开始自顶向下调整堆,作为一个原子操作
+#i: 表示开始调整的根节点，n: 堆大小
+def down(heap, i):
+    n = len(heap)
+    l, r = i*2+1, i*2+2
+    
+    j = i # j为最小值索引
+    if l<n and heap[l] < heap[i]: j = l
+    if r<n and heap[r] < heap[i]: j = r
+    
+    if i != j:
+        heap[i],heap[j] = heap[j], heap[i]
+        heapify(heap, j, n)
+
+```
+
+
+```c++
+#include<iostream> //make_heap,pop_heap,push_heap,sort_heap
+
+void swap(vector<int>& arr,int l,int r){
+    int tmp = arr[l];
+    arr[l] = arr[r];
+    arr[r] = tmp;
+}
+void heapify(vector<int>& heap, int index, int heap_size){
+    int n = heap_size;
+    int large = index, l = index*2+1, r = index*2+2;
+    //小根堆
+    if(l < n && heap[l] > heap[large]) large = l;
+    if(r < n && heap[r] > heap[large]) large = r;
+    
+    if(large != index){
+        swap(heap,index,large);
+        heapify(heap, large, heap_size);
+    }
+}
+
+void make_heap(vector<int>& heap){
+    int n = heap.size();
+    for(int i=(n-1)/2; i>-1; i--){
+        heapify(heap, i, n);
+    }
+}
+
+//小根堆降序排列
+void heap_sort(vector<int>& heap){
+    make_heap(heap);
+    for(int i=heap.size()-1; i>0; i--){
+        swap(heap,0,i);
+        heapify(heap, 0, i);
+    }
+}
+
+void heap_push(vector<int>& heap, int val){
+    heap.push_back(val);
+    int n = heap.size();
+    int index = (n-1)/2;
+    while(index >= 0){
+        heapify(heap, index, n);
+    }
+}
+int heap_pop(vector<int>& heap){
+    int res = heap[0];
+    swap(heap,0,heap.size()-1);
+    heap.pop_back();
+    heapify(heap, 0, heap.size());
+    return res;
+}
 ```
 
 
 
-#### 2.1.2 归并排序
+#### 2.1.4 归并排序
 
 [归并排序](https://www.acwing.com/problem/content/790/)
 
-```C
-int N = 100001;
-int q[N], tmp[N];
+![](./picture/归并.gif)
 
-void merge_sort(int q[], int l, int r)
-{
-    if (l >= r) return;
-
-    int mid = l + r >> 1;
-    merge_sort(q, l, mid);
-    merge_sort(q, mid + 1, r);
-
-    int k = 0, i = l, j = mid + 1;
-    while (i <= mid && j <= r)
-        if (q[i] <= q[j]) tmp[k ++ ] = q[i ++ ];
-        else tmp[k ++ ] = q[j ++ ];
-
-    while (i <= mid) tmp[k ++ ] = q[i ++ ];
-    while (j <= r) tmp[k ++ ] = q[j ++ ];
-
-    for (i = l, j = 0; i <= r; i ++, j ++ ) q[i] = tmp[j];
-}
-```
-```cpp
-template <class T>
-void merge_sort(std::vector<T> &v, std::vector<T> &tmp, int l, int r)
-{
-    if (l >= r) return;
-    int mid = l + r >> 1;
-    merge_sort(v, tmp, l, mid);
-    merge_sort(v, tmp, mid + 1, r);
-    
-    int i = l, j = mid + 1, k = l;
-    while (i <= mid && j <= r)
-    {
-        if (v[i] <= v[j]) tmp[k ++] = v[i ++];
-        else tmp[k ++] = v[j ++];
+```c++
+//3. 归并排序
+void merge(vector<int>& nums, int low, int mid, int high){
+    vector<int> tmp;
+    int i = low, j = mid+1;
+    while(i<=mid && j<=high){
+        if(nums[i]<=nums[j]) tmp.push_back(nums[i++]);
+        else tmp.push_back(nums[j++]);
     }
-    while (i <= mid) tmp[k ++] = v[i ++];
-    while (j <= r) tmp[k ++] = v[j ++];
-    for (int k = l; k <= r; k ++) v[k] = tmp[k];
+    while(i<=mid){
+        tmp.push_back(nums[i++]);
+    }
+    while(j<=high){
+        tmp.push_back(nums[j++]);
+    }
+    for(int i=low;i<=high;i++){
+        nums[i] = tmp[i-low];
+    }
+}
+void merge_sort(vector<int>& nums, int left, int right){
+    if(left < right){
+        int mid = left + (right-left)/2;
+        merge_sort(nums, left, mid);
+        merge_sort(nums, mid+1, right);
+        merge(nums, left, mid, right);
+    }
 }
 ```
 
 
+
+
+
+#### 2.1.5 桶排序 & 计数排序
+
+- 计数排序图解
+
+![](./picture/计数.gif)
+
+```c++
+//4. 桶排序、计数排序（k=1）
+void bucket_sort(vector<int>& nums){
+    int Max=0, Min=0;
+    for(auto val: nums){
+        Max = max(Max,val);
+        Min = min(Min,val);
+    }
+    //k: 数字间间隔;len:桶长;bucket:桶子
+    int k = 8;
+    int len = (Max-Min)/k +1;
+    vector<vector<int>> bucket(len);
+    for(auto val: nums){
+        bucket[(val-Min)/k].push_back(val);
+    }
+
+    int index=0;
+    for(auto& arr: bucket){
+        sort(arr.begin(),arr.end());
+        for(int i=0;i<arr.size();i++){
+            nums[index++] = arr[i];
+        }
+    }
+    
+}
+```
+
+
+
+#### 2.1.6 基数排序
+
+![](./picture/基数.gif)
+
+```c++
+//5. 基数排序
+//按某个位置进行一次入桶出桶,exp: 0,...k.表示pow(10,exp)
+void digit_bucket(vector<int>& nums, int exp){
+    vector<vector<int>> bucket(10);
+    for(int& val: nums){
+        int index = (val / (int)pow(10,exp))%10;
+        bucket[index].push_back(val);
+    }
+    int i=0;
+    for(auto arr: bucket){
+        for(int val: arr){
+            nums[i++] = val;
+        } 
+    }
+}
+
+void radix_sort(vector<int>& nums){
+    int Max = 0;
+    for(int val: nums) Max=max(Max,val);
+    int exps = 1;
+    while(Max/10!=0){
+        Max /= 10;
+        exps += 1;
+    }
+    for(int exp=0;exp<exps;exp++){
+        digit_bucket(nums, exp);
+    }
+}
+
+```
+
+#### 2.1.7 希尔排序
+
+![](./picture/希尔.gif)
+
+```c++
+//6. 希尔排序，增量序列：pow(2,k)-1,...,15,7,3,1
+//insert_k: 增量为 k 时插入排序
+void insert_k(vector<int>& nums, int step){
+    for(int i=0; i<step; i++){
+        for(int j=i; j<nums.size(); j+=step){
+            for(int k=j-step; k>=i && nums[k]>nums[k+step]; i-=step){
+                swap(nums[k],nums[k+step]);
+            }
+        }
+    }
+}
+void shell_sort(vector<int>& nums){
+    vector<int> sequence;
+    for(int i=1;pow(2,i)<nums.size()/2;i++){
+        sequence.push_back(pow(2,i)-1);
+    }
+    for(int i=sequence.size()-1;i>-1;i--){
+        insert_k(nums, sequence[i]);
+    }
+}
+```
+
+
+
+#### 2.1.8 内置排序
+
+##### C++
+
+[cplusplusreference](https://www.cplusplus.com/reference/algorithm/sort/?kw=sort)
+
+```c++
+#include<algorithm>  //sort()
+
+//比较函数的写法
+//方法一：声明外部比较函数或声明为静态函数
+//当comp作为类的成员函数时，默认拥有一个this指针，这样和sort函数所需要使用的排序函数类型不一样。
+bool Less(const Student& s1, const Student& s2)
+{
+    return s1.name < s2.name; //从小到大排序
+}
+sort(sutVector.begin(),sutVector.end(),Less);
+
+//方法二：重载类的比较运算符
+bool operator<(const Student& s1, const Student& s2)
+{
+    return s1.name < s2.name; //从小到大排序
+}
+sort(sutVector.begin(),sutVector.end());
+
+//方法三：声明比较类
+struct Less
+{
+    bool operator()(const Student& s1, const Student& s2)
+    {
+        return s1.name < s2.name; //从小到大排序
+    }
+};
+sort(sutVector.begin(),sutVector.end(),Less());
+```
+
+##### Python
+
+- 升/降序 和 lambda 函数
 
 ```python
-tmp = [0 for _ in range(len(nums))]
+# 对于列表 nums 原地降序排列，返回 None
+# reverse 指明升/降序，key 为一个参数的函数名，可以是lambda函数
+nums.sort(reverse = True, key = fun)
 
-def merge_sort(nums, l, r):
-    if l >= r: return
-    mid = l + r >> 1
-    merge_sort(nums, l, mid)
-    merge_sort(nums, mid+1, r)
-    
-    i, j, k = l, mid+1, 0
-    while i <= mid and j <= r:
-        if nums[i] <= nums[j]:
-            tmp[k] = nums[i]
-            i += 1
-        else:
-            tmp[k] = nums[j]
-            j += 1
-        k += 1
-    
-    while i <= mid:
-        tmp[k] = nums[i]
-        i += 1
-        k += 1
-    while j <= r:
-        tmp[k] = nums[j]
-        j += 1
-        k += 1
-    for i in range(l, r+1):
-        nums[i] = tmp[i-l]
+# 对于序列类型(list, tuple, range, str, set, dict), 返回 list
+ls = sorted(itrable, reverse = True, key = fun)
 
+# eg: 按 value 对字典进行排序
+ls = sorted(dic.items(), key = lambda item: item[1])
+```
+
+- 自定义\_\_lt\_\_
+
+```python
+# 对类自定义比较规则
+class MyStr(str):
+    def __lt__(self, other):
+        return self + other < other + self
+
+# nums: List[MyStr]
+nums.sort()
 ```
 
 
@@ -688,111 +880,6 @@ sorted_dict = SortedDict()
 ```
 
 
-
-### 3.9 C++ STL
-
-```
-vector, 变长数组，倍增的思想
-    size()  返回元素个数
-    empty()  返回是否为空
-    clear()  清空
-    front()/back()
-    push_back()/pop_back()
-    begin()/end()
-    []
-    支持比较运算，按字典序
-
-pair<int, int>
-    first, 第一个元素
-    second, 第二个元素
-    支持比较运算，以first为第一关键字，以second为第二关键字（字典序）
-
-string，字符串
-    size()/length()  返回字符串长度
-    empty()
-    clear()
-    substr(起始下标，(子串长度))  返回子串
-    c_str()  返回字符串所在字符数组的起始地址
-
-queue, 队列
-    size()
-    empty()
-    push()  向队尾插入一个元素
-    front()  返回队头元素
-    back()  返回队尾元素
-    pop()  弹出队头元素
-
-priority_queue, 优先队列，默认是大根堆
-    size()
-    empty()
-    push()  插入一个元素
-    top()  返回堆顶元素
-    pop()  弹出堆顶元素
-    定义成小根堆的方式：priority_queue<int, vector<int>, greater<int>> q;
-
-stack, 栈
-    size()
-    empty()
-    push()  向栈顶插入一个元素
-    top()  返回栈顶元素
-    pop()  弹出栈顶元素
-
-deque, 双端队列
-    size()
-    empty()
-    clear()
-    front()/back()
-    push_back()/pop_back()
-    push_front()/pop_front()
-    begin()/end()
-    []
-
-set, map, multiset, multimap, 基于平衡二叉树（红黑树），动态维护有序序列
-    size()
-    empty()
-    clear()
-    begin()/end()
-    ++, -- 返回前驱和后继，时间复杂度 O(logn)
-
-    set/multiset
-        insert()  插入一个数
-        find()  查找一个数
-        count()  返回某一个数的个数
-        erase()
-            (1) 输入是一个数x，删除所有x   O(k + logn)
-            (2) 输入一个迭代器，删除这个迭代器
-        lower_bound()/upper_bound()
-            lower_bound(x)  返回大于等于x的最小的数的迭代器
-            upper_bound(x)  返回大于x的最小的数的迭代器
-    map/multimap
-        insert()  插入的数是一个pair
-        erase()  输入的参数是pair或者迭代器
-        find()
-        []  注意multimap不支持此操作。 时间复杂度是 O(logn)
-        lower_bound()/upper_bound()
-
-unordered_set, unordered_map, unordered_multiset, unordered_multimap, 哈希表
-    和上面类似，增删改查的时间复杂度是 O(1)
-    不支持 lower_bound()/upper_bound()， 迭代器的++，--
-
-bitset, 圧位
-    bitset<10000> s;
-    ~, &, |, ^
-    >>, <<
-    ==, !=
-    []
-
-    count()  返回有多少个1
-
-    any()  判断是否至少有一个1
-    none()  判断是否全为0
-
-    set()  把所有位置成1
-    set(k, v)  将第k位变成v
-    reset()  把所有位变成0
-    flip()  等价于~
-    flip(k) 把第k位取反
-```
 
 
 
