@@ -112,6 +112,9 @@ bitset, 圧位
 #### 1. vector
 
 动态数组，方便动态扩容，方便的变量初始化(int类型默认初始化为0，bool默认初始化为false)，可以用来实现邻接表（结点数太多的图）。
+
+VS下1.5倍扩容、GCC下2倍扩容，Capacity为总容量
+
 **头文件**
 
 ```cpp
@@ -295,7 +298,7 @@ for(auto it=mp.begin();it!=mp.end();it++)
 
 #### 5. queue
 
-队列，先进先出的容器，常用语广度优先遍历BFS
+队列，先进先出的容器，常用于广度优先遍历BFS
 **头文件及定义**
 
 ```cpp
@@ -430,3 +433,4 @@ cout<<p.first<<" "<<p.second;
 #### 9. C++区别于C
 
 namespace, cin/cout, 变量声明(for 循环), bool, const, string, 结构体定义(可不加 struct), 引用, auto
+

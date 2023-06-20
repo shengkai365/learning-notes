@@ -1074,34 +1074,38 @@ int main()
 
 ```python
 def find(graph, st, match, i):
-    for j in graph[i]:  # j: 集合二中节点
-        if not st[j]:
-            st[j] = True
-            if match[j] == 0 or find(graph, st, match, match[j]):
-                match[j] = i
+    """
+    尝试为左侧节点 i 找到一个匹配，如果能找到则返回 True，否则返回 False
+    """
+    for j in graph[i]:  		# j: 集合二中节点
+        if not st[j]:  			# 如果节点 j 没有被遍历过
+            st[j] = True  		# 标记节点 j 为已遍历
+            
+            # 如果节点 j 没有被匹配，或者节点 j 的匹配可以被重新分配
+            if match[j] == 0 or find(graph, st, match, match[j]):  
+                match[j] = i  	# 将节点 j 匹配到左侧节点 i
                 return True
     return False
-        
+
 
 def main():
     n1, n2, m = map(int, input().split())
-    # 邻接表
+    # 邻接表，用于存储左侧节点和右侧节点之间的边
     graph = [[] for _ in range(n1 + 1)]
-    # 表示第二个集合中每个点当前匹配的第一个集合中的点是哪个
+    # 匹配列表，用于存储右侧节点当前匹配的左侧节点
     match = [0 for _ in range(n2 + 1)]
     
     for i in range(m):
         a, b = map(int, input().split())
-        graph[a].append(b)
+        graph[a].append(b)  # 添加左侧节点 a 到右侧节点 b 的边
     
-    ret = 0
-    for i in range(1, n1 + 1):
-        # 表示第二个集合中每个点是否已被遍历过
-        st = [False for _ in range(n2 + 1)] 
-        if find(graph, st, match, i):
-            ret += 1
+    ret = 0  # 匹配数量
+    for i in range(1, n1 + 1):  # 枚举左侧节点
+        st = [False for _ in range(n2 + 1)]  # 标记右侧节点是否已被遍历过
+        if find(graph, st, match, i):  # 尝试为左侧节点 i 找到一个匹配
+            ret += 1  # 如果成功找到匹配，匹配数量加一
         
-    print(ret)
+    print(ret)  # 输出匹配数量
     
 if __name__ == "__main__":
     main()
